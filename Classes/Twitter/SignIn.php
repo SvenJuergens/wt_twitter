@@ -56,8 +56,8 @@ class Tx_WtTwitter_Twitter_SignIn {
 					Tx_WtTwitter_Twitter_Api::getOAuthParameter(
 						'',
 						array(
-							'oauth_callback' => t3lib_div::getIndpEnv('TYPO3_SITE_URL') .
-								t3lib_extMgm::siteRelPath('wt_twitter') . 'Classes/Twitter/Redirect.php'
+							'oauth_callback' => \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SITE_URL') .
+								\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath('wt_twitter') . 'Classes/Twitter/Redirect.php'
 						)
 					),
 					$url,
@@ -75,40 +75,70 @@ class Tx_WtTwitter_Twitter_SignIn {
 
 				$response = curl_exec($ch);
 				if (curl_getinfo($ch, CURLINFO_HTTP_CODE) == 200) {
-					$responseArray = t3lib_div::explodeUrl2Array($response);
+					$responseArray = \TYPO3\CMS\Core\Utility\GeneralUtility::explodeUrl2Array($response);
 
 					$content .= '<a href="#" onclick="twitterWindow = window.open(\'' .
 						Tx_WtTwitter_Twitter_Api::getOAuthAuthorizeUrl() . '?oauth_token=' . $responseArray['oauth_token'] .
 						'\',\'Sign in with Twitter\',\'height=650,width=650,status=0,menubar=0,resizable=1,location=0,directories=0,scrollbars=1,toolbar=0\');">';
-					$content .= '<img alt="Sign in with Twitter" height="28" src="' . t3lib_extMgm::extRelPath('wt_twitter') . 'Resources/Public/Images/sign-in-with-twitter.png" width="158" />';
+					$content .= '<img alt="Sign in with Twitter" height="28" src="' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('wt_twitter') . 'Resources/Public/Images/sign-in-with-twitter.png" width="158" />';
 					$content .= '</a>';
 				} else {
-					$flashMessage = t3lib_div::makeInstance('t3lib_FlashMessage',
+                    $this->notify(
 						'Twitter couldn\'t generate the request token.<br /><br />' .
 						'Headers sent:<br />' . nl2br(curl_getinfo($ch, CURLINFO_HEADER_OUT)),
 						'An error occurred',
-						t3lib_FlashMessage::ERROR
+						\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
 					);
-					$content .= $flashMessage->render();
 				}
 				curl_close($ch);
 			} else {
-				$flashMessage = t3lib_div::makeInstance('t3lib_FlashMessage',
+                $this->notify(
 					'Please enable the use of curl in TYPO3 Install Tool by activation of TYPO3_CONF_VARS[SYS][curlUse] and check PHP integration.',
 					'No curl available',
-					t3lib_FlashMessage::ERROR
+					\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
 				);
-				$content .= $flashMessage->render();
 			}
 		} else {
-			$flashMessage = t3lib_div::makeInstance('t3lib_FlashMessage',
+			$this->notify(
 				'You already registered this application with your Twitter account.',
 				'Already signed in',
-				t3lib_FlashMessage::OK
+                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
 			);
-			$content .= $flashMessage->render();
 		}
 
 		return $content;
 	}
+
+
+    /**
+     * Notifies the user using a Flash message.
+     * original from EXT:image_autoresize
+     *
+     * @param string $message The message
+     * @param string $messageHeader The message header
+     * @param integer $severity Optional severity, must be either of \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
+     *                          \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
+     *                          \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
+     *                          or \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR.
+     *                          Default is \TYPO3\CMS\Core\Messaging\FlashMessage::OK.
+     * @return void
+     */
+    public function notify($message, $messageHeader, $severity = \TYPO3\CMS\Core\Messaging\FlashMessage::OK)
+    {
+        if (TYPO3_MODE !== 'BE') {
+            return;
+        }
+        $flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+            $message,
+            $messageHeader,
+            $severity,
+            true
+        );
+        /** @var $flashMessageService \TYPO3\CMS\Core\Messaging\FlashMessageService */
+        $flashMessageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
+        /** @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue */
+        $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
+        $defaultFlashMessageQueue->enqueue($flashMessage);
+    }
 }

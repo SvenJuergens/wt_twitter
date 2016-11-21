@@ -39,31 +39,14 @@ class tx_wttwitter_pi1_wizicon {
 	 *
 	 * @return array Modified array with wizard items
 	 */
-	function proc($wizardItems) {
-		global $LANG;
-
-		$LL = $this->includeLocalLang();
-
+	public function proc($wizardItems) {
 		$wizardItems['plugins_tx_wttwitter_pi1'] = array(
-			'icon' => t3lib_extMgm::extRelPath('wt_twitter') . '/Resources/Public/Icons/ce_wiz.gif',
-			'title' => $LANG->getLLL('list_title', $LL),
-			'description' => $LANG->getLLL('list_plus_wiz_description', $LL),
+			'icon' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('wt_twitter') . '/Resources/Public/Icons/ce_wiz.gif',
+			'title' => $GLOBALS['LANG']->sL('LLL:wt_twitter/Resources/Private/Language/locallang_module.xml:list_title'),
+			'description' => $GLOBALS['LANG']->sL('LLL:wt_twitter/Resources/Private/Language/locallang_module.xml:list_plus_wiz_description'),
 			'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=wttwitter_list'
 		);
 
 		return $wizardItems;
-	}
-
-	/**
-	 * Reads the [extDir]/locallang.xml and returns the $LOCAL_LANG array found in that file.
-	 *
-	 * @return array The array with language labels
-	 */
-	function includeLocalLang() {
-		$llFile = t3lib_extMgm::extPath('wt_twitter') . '/Resources/Private/Language/locallang_module.xml';
-
-		$LOCAL_LANG = Tx_WtTwitter_Utility_Compatibility::readLLXMLfile($llFile, $GLOBALS['LANG']->lang);
-
-		return $LOCAL_LANG;
 	}
 }

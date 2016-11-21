@@ -29,12 +29,13 @@
  * @package TYPO3
  * @subpackage wt_twitter
  */
+
 class Tx_WtTwitter_Domain_Repository_TweetRepository {
 
 	/**
 	 * The content object
 	 *
-	 * @var tslib_cObj
+	 * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
 	 */
 	protected $contentObject = NULL;
 
@@ -44,13 +45,6 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	 * @var array
 	 */
 	protected $extensionConfiguration = array();
-
-	/**
-	 * The flash messages container
-	 *
-	 * @var Tx_Extbase_MVC_Controller_FlashMessages
-	 */
-	protected $flashMessageContainer = NULL;
 
 	/**
 	 * The plugin settings
@@ -64,15 +58,7 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	 */
 	public function __construct() {
 		$this->extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['wt_twitter']);
-		$this->contentObject = t3lib_div::makeInstance('tslib_cObj');
-	}
-
-	/**
-	 * @param Tx_Extbase_MVC_Controller_FlashMessages $flashMessageContainer
-	 * @return void
-	 */
-	public function injectFlashMessageContainer(Tx_Extbase_MVC_Controller_FlashMessages $flashMessageContainer) {
-		$this->flashMessageContainer = $flashMessageContainer;
+		$this->contentObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
 	}
 
 	/**
@@ -88,7 +74,7 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 			$parameter = array();
 
 			// Get screen name
-			if (Tx_WtTwitter_Utility_Compatibility::testInt($this->settings['account'])) {
+			if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->settings['account'])) {
 				$parameter['user_id'] = $this->settings['account'];
 			} else {
 				$parameter['screen_name'] = $this->settings['account'];
@@ -155,7 +141,7 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 			);
 
 			// Get screen name
-			if (Tx_WtTwitter_Utility_Compatibility::testInt($this->settings['account'])) {
+			if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->settings['account'])) {
 				$parameter['user_id'] = $this->settings['account'];
 			} else {
 				$parameter['screen_name'] = $this->settings['account'];
@@ -204,9 +190,8 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 
 		if ($this->isTwitterSigned()&& $this->isCurlActivated()) {
 			$parameter = array();
-
 			// Get screen name
-			if (Tx_WtTwitter_Utility_Compatibility::testInt($this->settings['account'])) {
+			if ( \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->settings['account'])) {
 				$parameter['user_id'] = $this->settings['account'];
 			} else {
 				$parameter['screen_name'] = $this->settings['account'];
@@ -254,10 +239,10 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	 */
 	protected function isTwitterSigned() {
 		if (empty($this->extensionConfiguration['oauth_token']) || empty($this->extensionConfiguration['oauth_token_secret'])) {
-			$this->flashMessageContainer->add(
+			$this->notify(
 				'Please authorize your Twitter account in the extension settings.',
 				'Twitter account not authorize',
-				t3lib_FlashMessage::ERROR
+				\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
 			);
 
 			return FALSE;
@@ -271,10 +256,10 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	 */
 	protected function isCurlActivated() {
 		if (!$GLOBALS['TYPO3_CONF_VARS']['SYS']['curlUse'] || !function_exists('curl_init')) {
-			$this->flashMessageContainer->add(
+			$this->notify(
 				'Please enable the use of curl in TYPO3 Install Tool by activation of TYPO3_CONF_VARS[SYS][curlUse] and check PHP integration.',
 				'No curl available',
-				t3lib_FlashMessage::ERROR
+				\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
 			);
 
 			return FALSE;
@@ -440,5 +425,37 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 			unset($tweet);
 		}
 	}
+
+    /**
+     * Notifies the user using a Flash message.
+     * original from EXT:image_autoresize
+     *
+     * @param string $message The message
+     * @param string $messageHeader The message header
+     * @param integer $severity Optional severity, must be either of \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
+     *                          \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
+     *                          \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
+     *                          or \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR.
+     *                          Default is \TYPO3\CMS\Core\Messaging\FlashMessage::OK.
+     * @return void
+     */
+    public function notify($message, $messageHeader, $severity = \TYPO3\CMS\Core\Messaging\FlashMessage::OK)
+    {
+        if (TYPO3_MODE !== 'BE') {
+            return;
+        }
+        $flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+            $message,
+            $messageHeader,
+            $severity,
+            true
+        );
+        /** @var $flashMessageService \TYPO3\CMS\Core\Messaging\FlashMessageService */
+        $flashMessageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
+        /** @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue */
+        $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
+        $defaultFlashMessageQueue->enqueue($flashMessage);
+    }
 
 }

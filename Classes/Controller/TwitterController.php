@@ -29,7 +29,10 @@
  * @package TYPO3
  * @subpackage wt_twitter
  */
-class Tx_WtTwitter_Controller_TwitterController extends Tx_Extbase_MVC_Controller_ActionController {
+
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+
+class Tx_WtTwitter_Controller_TwitterController extends ActionController {
 
 	/**
 	 * @var Tx_WtTwitter_Domain_Repository_TweetRepository
@@ -78,7 +81,7 @@ class Tx_WtTwitter_Controller_TwitterController extends Tx_Extbase_MVC_Controlle
 		$response = '';
 
 		if (count($this->settings) < 8) { // only flexform config (but no TypoScript)
-			$this->flashMessageContainer->add('Please add wt_twitter Static Template in the TYPO3 Backend'); // show missing template error
+			$this->addFlashMessage('Please add wt_twitter Static Template in the TYPO3 Backend'); // show missing template error
 		}
 
 		switch ($this->settings['mode']) {
@@ -100,10 +103,10 @@ class Tx_WtTwitter_Controller_TwitterController extends Tx_Extbase_MVC_Controlle
 			$response = json_decode($response);
 			if (!empty($response->errors)) {
 				foreach ($response->errors as $error) {
-					$this->flashMessageContainer->add(
+					$this->addFlashMessage(
 						$error->message . ' (error code: ' . $error->code . ')',
 						'Error ' . $error->code,
-						t3lib_FlashMessage::ERROR
+                        \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
 					);
 				}
 				unset($error);
@@ -117,8 +120,8 @@ class Tx_WtTwitter_Controller_TwitterController extends Tx_Extbase_MVC_Controlle
 		$this->view->assign('tweets', $tweets); // array to view
 
 		if ($this->settings['debug'] == 1) {
-			t3lib_utility_Debug::debug($this->settings, 'TypoScript and Flexform settings');
-			t3lib_utility_Debug::debug($tweets, 'Result Array from Twitter');
+            \TYPO3\CMS\Core\Utility\DebugUtility::debug($this->settings, 'TypoScript and Flexform settings');
+            \TYPO3\CMS\Core\Utility\DebugUtility::debug($tweets, 'Result Array from Twitter');
 		}
 	}
 }

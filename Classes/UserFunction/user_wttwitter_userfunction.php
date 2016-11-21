@@ -31,7 +31,7 @@
 class user_wttwitteruserfunction {
 
 	/**
-	 * @var tslib_cObj
+	 * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
 	 */
 	var $cObj = NULL;
 
@@ -78,7 +78,7 @@ class user_wttwitteruserfunction {
 			if (!empty($url)) { // if there is a URL
 				$typolinkconf = array('parameter' => $url); // typolink configuration
 				$typolinkconf = array_merge((array)$conf['typolink.'], $typolinkconf); // get params from typoscript
-				$string = str_replace($url, $this->cObj->typolink($url, $typolinkconf), $string); // replace each url with typolink
+				$string = str_replace($url, $this->cObj->typoLink($url, $typolinkconf), $string); // replace each url with typolink
 			}
 		}
 
@@ -89,7 +89,7 @@ class user_wttwitteruserfunction {
 			if (!empty($value)) { // if there is a value
 				$typolinkconf = array('parameter' => 'https://www.twitter.com/' . str_replace('@', '', $value)); // typolink configuration
 				$typolinkconf = array_merge((array)$conf['typolink.'], $typolinkconf); // get params from typoscript
-				$string = str_replace($value, $this->cObj->typolink($value, $typolinkconf), $string); // replace each url with typolink
+				$string = str_replace($value, $this->cObj->typoLink($value, $typolinkconf), $string); // replace each url with typolink
 			}
 		}
 
@@ -101,7 +101,7 @@ class user_wttwitteruserfunction {
 			if (!empty($value)) { // if there is a value
 				$typolinkconf = array('parameter' => 'https://twitter.com/search?q=%23' . str_replace('#', '', $value)); // typolink configuration
 				$typolinkconf = array_merge((array)$conf['typolink.'], $typolinkconf); // get params from typoscript
-				$string = str_replace($value, $this->cObj->typolink($value, $typolinkconf), $string); // replace each url with typolink
+				$string = str_replace($value, $this->cObj->typoLink($value, $typolinkconf), $string); // replace each url with typolink
 			}
 		}
 
