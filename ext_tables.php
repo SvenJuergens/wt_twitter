@@ -13,10 +13,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['wttwitte
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['wttwitter_list'] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('wttwitter_list', 'FILE:EXT:wt_twitter/Configuration/Flexforms/flexform.xml');
 
-if (TYPO3_MODE == 'BE') {
-    $TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_wttwitter_pi1_wizicon'] =
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Resources/Private/BackEnd/TwitterWizicon.php';
-}
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Main/', 'Main TypoScript');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/NewsTicker/', 'Newsticker');
