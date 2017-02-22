@@ -1,4 +1,5 @@
 <?php
+
 /***************************************************************
  *  Copyright notice
  *
@@ -22,12 +23,12 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-require_once('Api.php');
+require_once('TwitterApi.php');
 
 $oAuthToken = '';
 $oAuthTokenSecret = '';
 if (!empty($_GET['oauth_token']) && !empty($_GET['oauth_verifier'])) {
-    $url = Tx_WtTwitter_Twitter_Api::getOAuthAccessTokenUrl();
+    $url = \WtTwitterPackage\WtTwitter\Twitter\TwitterApi::getOAuthAccessTokenUrl();
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -37,8 +38,8 @@ if (!empty($_GET['oauth_token']) && !empty($_GET['oauth_verifier'])) {
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_POST, 1);
 
-    $oAuthParameter = Tx_WtTwitter_Twitter_Api::createSignature(
-        Tx_WtTwitter_Twitter_Api::getOAuthParameter(
+    $oAuthParameter = \WtTwitterPackage\WtTwitter\Twitter\TwitterApi::createSignature(
+        \WtTwitterPackage\WtTwitter\Twitter\TwitterApi::getOAuthParameter(
             $_GET['oauth_token'],
             [
                 'oauth_token' => $_GET['oauth_token'],
@@ -47,12 +48,12 @@ if (!empty($_GET['oauth_token']) && !empty($_GET['oauth_verifier'])) {
         ),
         $url,
         'POST',
-        Tx_WtTwitter_Twitter_Api::consumerSecret,
+        \WtTwitterPackage\WtTwitter\Twitter\TwitterApi::consumerSecret,
         ''
     );
 
     $header = [
-        'Authorization: OAuth ' . Tx_WtTwitter_Twitter_Api::implodeArrayForHeader($oAuthParameter),
+        'Authorization: OAuth ' . \WtTwitterPackage\WtTwitter\Twitter\TwitterApi::implodeArrayForHeader($oAuthParameter),
         'Content-Length:',
         'Content-Type:',
         'Expect:'

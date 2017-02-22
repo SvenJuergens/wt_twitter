@@ -1,4 +1,6 @@
 <?php
+namespace WtTwitterPackage\WtTwitter\Controller;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -27,21 +29,24 @@
  *
  * @author Nicole Cordes <cordes@cps-it.de>
  */
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use WtTwitterPackage\WtTwitter\Domain\Repository\TweetRepository;
 
-class Tx_WtTwitter_Controller_TwitterController extends ActionController
+class TwitterController extends ActionController
 {
 
     /**
-     * @var Tx_WtTwitter_Domain_Repository_TweetRepository
+     * @var TweetRepository
      */
     protected $tweetRepository = null;
 
     /**
-     * @param Tx_WtTwitter_Domain_Repository_TweetRepository $tweetRepository
+     * @param TweetRepository $tweetRepository
      * @return void
      */
-    public function injectTweetRepository(Tx_WtTwitter_Domain_Repository_TweetRepository $tweetRepository)
+    public function injectTweetRepository(TweetRepository $tweetRepository)
     {
         $this->tweetRepository = $tweetRepository;
     }
@@ -67,7 +72,8 @@ class Tx_WtTwitter_Controller_TwitterController extends ActionController
 
         // Set cache if cache_timeout was not set in the current page
         if ($GLOBALS['TSFE']->page['cache_timeout'] == 0) {
-            $GLOBALS['TSFE']->set_cache_timeout_default($this->settings['cache_timeout']); // cache of current page should be renewed after 50 Min
+            // cache of current page should be renewed after 50 Min
+            $GLOBALS['TSFE']->set_cache_timeout_default($this->settings['cache_timeout']);
         }
     }
 
@@ -81,8 +87,10 @@ class Tx_WtTwitter_Controller_TwitterController extends ActionController
         $tweets = [];
         $response = '';
 
-        if (count($this->settings) < 8) { // only flexform config (but no TypoScript)
-            $this->addFlashMessage('Please add wt_twitter Static Template in the TYPO3 Backend'); // show missing template error
+        // only flexform config (but no TypoScript)
+        if (count($this->settings) < 8) {
+            // show missing template error
+            $this->addFlashMessage('Please add wt_twitter Static Template in the TYPO3 Backend');
         }
 
         switch ($this->settings['mode']) {
@@ -107,7 +115,7 @@ class Tx_WtTwitter_Controller_TwitterController extends ActionController
                     $this->addFlashMessage(
                         $error->message . ' (error code: ' . $error->code . ')',
                         'Error ' . $error->code,
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+                        FlashMessage::ERROR
                     );
                 }
                 unset($error);
@@ -121,8 +129,8 @@ class Tx_WtTwitter_Controller_TwitterController extends ActionController
         $this->view->assign('tweets', $tweets); // array to view
 
         if ($this->settings['debug'] == 1) {
-            \TYPO3\CMS\Core\Utility\DebugUtility::debug($this->settings, 'TypoScript and Flexform settings');
-            \TYPO3\CMS\Core\Utility\DebugUtility::debug($tweets, 'Result Array from Twitter');
+            DebugUtility::debug($this->settings, 'TypoScript and Flexform settings');
+            DebugUtility::debug($tweets, 'Result Array from Twitter');
         }
     }
 }
