@@ -1,4 +1,6 @@
 <?php
+namespace WtTwitterPackage\WtTwitter\Domain\Repository;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -27,7 +29,7 @@
  *
  * @author Nicole Cordes <cordes@cps-it.de>
  */
-class Tx_WtTwitter_Domain_Repository_TweetRepository
+class TweetRepository
 {
 
     /**

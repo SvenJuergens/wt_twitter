@@ -1,4 +1,6 @@
 <?php
+namespace WtTwitterPackage\WtTwitter\Twitter;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -25,7 +27,7 @@
 /**
  * @author Nicole Cordes <cordes@cps-it.de>
  */
-final class Tx_WtTwitter_Twitter_Api
+final class TwitterApi
 {
     const consumerKey = '2G3ws4mSXwMLmiKX3erUA';
 

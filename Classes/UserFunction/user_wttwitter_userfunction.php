@@ -76,9 +76,13 @@ class user_wttwitteruserfunction
         preg_match_all('/(^|\s)(https?:\/\/|www\.)\S*/i', $string, $arr_result); // get all links of the string
         foreach ((array)$arr_result[0] as $url) { // one loop for every link in the string
             if (!empty($url)) { // if there is a URL
-                $typolinkconf = ['parameter' => $url]; // typolink configuration
-                $typolinkconf = array_merge((array)$conf['typolink.'], $typolinkconf); // get params from typoscript
-                $string = str_replace($url, $this->cObj->typoLink($url, $typolinkconf), $string); // replace each url with typolink
+                $typoLinkConf = ['parameter' => $url]; // typolink configuration
+                $typoLinkConf = array_merge((array)$conf['typolink.'], $typoLinkConf); // get params from typoscript
+                $string = str_replace(
+                    $url,
+                    $this->cObj->typoLink($url, $typoLinkConf),
+                    $string
+                ); // replace each url with typolink
             }
         }
 
@@ -87,9 +91,13 @@ class user_wttwitteruserfunction
         foreach ((array)$arr_result2[0] as $value) { // one loop for every twittername in string
             $value = trim($value); // trim it
             if (!empty($value)) { // if there is a value
-                $typolinkconf = ['parameter' => 'https://www.twitter.com/' . str_replace('@', '', $value)]; // typolink configuration
-                $typolinkconf = array_merge((array)$conf['typolink.'], $typolinkconf); // get params from typoscript
-                $string = str_replace($value, $this->cObj->typoLink($value, $typolinkconf), $string); // replace each url with typolink
+                $typoLinkConf = ['parameter' => 'https://www.twitter.com/' . str_replace('@', '', $value)]; // typolink configuration
+                $typoLinkConf = array_merge((array)$conf['typolink.'], $typoLinkConf); // get params from typoscript
+                $string = str_replace(
+                    $value,
+                    $this->cObj->typoLink($value, $typoLinkConf),
+                    $string
+                ); // replace each url with typolink
             }
         }
 
@@ -99,9 +107,13 @@ class user_wttwitteruserfunction
         foreach ((array)$arr_result3[0] as $value) { // one loop for every twittername in string
             $value = trim($value); // trim it
             if (!empty($value)) { // if there is a value
-                $typolinkconf = ['parameter' => 'https://twitter.com/search?q=%23' . str_replace('#', '', $value)]; // typolink configuration
-                $typolinkconf = array_merge((array)$conf['typolink.'], $typolinkconf); // get params from typoscript
-                $string = str_replace($value, $this->cObj->typoLink($value, $typolinkconf), $string); // replace each url with typolink
+                $typoLinkConf = ['parameter' => 'https://twitter.com/search?q=%23' . str_replace('#', '', $value)]; // typolink configuration
+                $typoLinkConf = array_merge((array)$conf['typolink.'], $typoLinkConf); // get params from typoscript
+                $string = str_replace(
+                    $value,
+                    $this->cObj->typoLink($value, $typoLinkConf),
+                    $string
+                ); // replace each url with typolink
             }
         }
 
