@@ -24,6 +24,8 @@ namespace WtTwitterPackage\WtTwitter\Domain\Repository;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use WtTwitterPackage\WtTwitter\Twitter\TwitterApi;
+
 /**
  * Repository for tweets
  *
@@ -96,7 +98,7 @@ class TweetRepository
                 $parameter['exclude_replies'] = 'false';
             }
 
-            $tweets = $this->callApi(Tx_WtTwitter_Twitter_Api::getStatusesUserTimelineUrl(), 'GET', $parameter, $response);
+            $tweets = $this->callApi(TwitterApi::getStatusesUserTimelineUrl(), 'GET', $parameter, $response);
         }
 
         $this->postProcessTweets($tweets);
@@ -119,7 +121,7 @@ class TweetRepository
                 'q' => $this->settings['hashtag']
             ];
 
-            $result = $this->callApi(Tx_WtTwitter_Twitter_Api::getSearchTweetsUrl(), 'GET', $parameter, $response);
+            $result = $this->callApi(TwitterApi::getSearchTweetsUrl(), 'GET', $parameter, $response);
             $tweets = $result->statuses;
         }
 
@@ -151,7 +153,7 @@ class TweetRepository
                 $parameter['screen_name'] = $this->settings['account'];
             }
 
-            $result = $this->callApi(Tx_WtTwitter_Twitter_Api::getListsOwnershipsUrl(), 'GET', $parameter, $response);
+            $result = $this->callApi(TwitterApi::getListsOwnershipsUrl(), 'GET', $parameter, $response);
             $lists = $result->lists;
 
             usort($lists, function ($a, $b) use ($settings) {
@@ -204,7 +206,7 @@ class TweetRepository
 
             while (!empty($cursor) && ($this->settings['limit'] == 0 || $this->settings['limit'] > count($lists))) {
                 $parameter['cursor'] = $cursor;
-                $result = $this->callApi(Tx_WtTwitter_Twitter_Api::getListsMembershipsUrl(), 'GET', $parameter, $response);
+                $result = $this->callApi(TwitterApi::getListsMembershipsUrl(), 'GET', $parameter, $response);
                 $lists = array_merge($lists, (array) $result->lists);
                 $cursor = $result->next_cursor_str;
             }
@@ -284,7 +286,7 @@ class TweetRepository
      */
     protected function callApi($url, $method, $parameter, &$response)
     {
-        $tweets = Tx_WtTwitter_Twitter_Api::processRequest(
+        $tweets = TwitterApi::processRequest(
             $this->extensionConfiguration['oauth_token'],
             $this->extensionConfiguration['oauth_token_secret'],
             $url,
