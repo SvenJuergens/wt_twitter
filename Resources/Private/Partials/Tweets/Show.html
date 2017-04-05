@@ -1,10 +1,10 @@
 <f:for each="{tweets}" as="tweet">
 	<li style="padding: 10px; min-height: 40px;">
 		<f:if condition="{tweet.from_user}">
-			<f:link.external uri="http://twitter.com/{tweet.from_user}" target="_blank">
+			<f:link.external uri="https://twitter.com/{tweet.from_user}" target="_blank">
 				<img src="{tweet.profile_image_url}" alt="{tweet.from_user}" class="wt_twitter_profile_image" style="float: left; margin-right: 10px; border: 0;" />
 			</f:link.external>
-			<f:link.external uri="http://twitter.com/{tweet.from_user}" target="_blank">{tweet.from_user}</f:link.external>
+			<f:link.external uri="https://twitter.com/{tweet.from_user}" target="_blank">{tweet.from_user}</f:link.external>
 		</f:if>
 
 		{tweet -> f:cObject(typoscriptObjectPath: 'plugin.tx_wttwitter.settings.setup.tweets.created_at', currentValueKey: 'created_at')}<br />

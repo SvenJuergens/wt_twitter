@@ -24,6 +24,11 @@ namespace WtTwitterPackage\WtTwitter\Domain\Repository;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use WtTwitterPackage\WtTwitter\Twitter\TwitterApi;
 
 /**
@@ -37,7 +42,7 @@ class TweetRepository
     /**
      * The content object
      *
-     * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
+     * @var ContentObjectRenderer
      */
     protected $contentObject = null;
 
@@ -61,7 +66,7 @@ class TweetRepository
     public function __construct()
     {
         $this->extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['wt_twitter']);
-        $this->contentObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
+        $this->contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
     }
 
     /**
@@ -78,7 +83,7 @@ class TweetRepository
             $parameter = [];
 
             // Get screen name
-            if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->settings['account'])) {
+            if (MathUtility::canBeInterpretedAsInteger($this->settings['account'])) {
                 $parameter['user_id'] = $this->settings['account'];
             } else {
                 $parameter['screen_name'] = $this->settings['account'];
@@ -147,7 +152,7 @@ class TweetRepository
             ];
 
             // Get screen name
-            if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->settings['account'])) {
+            if (MathUtility::canBeInterpretedAsInteger($this->settings['account'])) {
                 $parameter['user_id'] = $this->settings['account'];
             } else {
                 $parameter['screen_name'] = $this->settings['account'];
@@ -167,9 +172,9 @@ class TweetRepository
                         $valueB = (int) $b->member_count;
                         break;
                     default:
-                        $dateA = new DateTime($a->created_at);
+                        $dateA = new \DateTime($a->created_at);
                         $valueA = $dateA->getTimestamp();
-                        $dateB = new DateTime($b->created_at);
+                        $dateB = new \DateTime($b->created_at);
                         $valueB = $dateB->getTimestamp();
                 }
 
@@ -198,7 +203,7 @@ class TweetRepository
         if ($this->isTwitterSigned()&& $this->isCurlActivated()) {
             $parameter = [];
             // Get screen name
-            if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->settings['account'])) {
+            if (MathUtility::canBeInterpretedAsInteger($this->settings['account'])) {
                 $parameter['user_id'] = $this->settings['account'];
             } else {
                 $parameter['screen_name'] = $this->settings['account'];
@@ -222,9 +227,9 @@ class TweetRepository
                         $valueB = (int) $b->member_count;
                         break;
                     default:
-                        $dateA = new DateTime($a->created_at);
+                        $dateA = new \DateTime($a->created_at);
                         $valueA = $dateA->getTimestamp();
-                        $dateB = new DateTime($b->created_at);
+                        $dateB = new \DateTime($b->created_at);
                         $valueB = $dateB->getTimestamp();
                 }
 
@@ -246,11 +251,13 @@ class TweetRepository
      */
     protected function isTwitterSigned()
     {
-        if (empty($this->extensionConfiguration['oauth_token']) || empty($this->extensionConfiguration['oauth_token_secret'])) {
+        if (empty($this->extensionConfiguration['oauth_token'])
+            || empty($this->extensionConfiguration['oauth_token_secret'])
+        ) {
             $this->notify(
                 'Please authorize your Twitter account in the extension settings.',
                 'Twitter account not authorize',
-                \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+                FlashMessage::ERROR
             );
 
             return false;
@@ -266,9 +273,10 @@ class TweetRepository
     {
         if (!$GLOBALS['TYPO3_CONF_VARS']['SYS']['curlUse'] || !function_exists('curl_init')) {
             $this->notify(
-                'Please enable the use of curl in TYPO3 Install Tool by activation of TYPO3_CONF_VARS[SYS][curlUse] and check PHP integration.',
+                'Please enable the use of curl in TYPO3 Install Tool by activation of 
+                 TYPO3_CONF_VARS[SYS][curlUse] and check PHP integration.',
                 'No curl available',
-                \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+                FlashMessage::ERROR
             );
 
             return false;
@@ -389,7 +397,14 @@ class TweetRepository
                         $typolinkConfiguration = [
                             'parameter' => $url->expanded_url,
                         ];
-                        $tweet->text = str_replace($urlInText, $this->contentObject->typolink($urlInText, $typolinkConfiguration), $tweet->text);
+                        $tweet->text = str_replace(
+                            $urlInText,
+                            $this->contentObject->typolink(
+                                $urlInText,
+                                $typolinkConfiguration
+                            ),
+                            $tweet->text
+                        );
                     }
                     unset($url);
                 }
@@ -412,7 +427,14 @@ class TweetRepository
                         $typolinkConfiguration = [
                             'parameter' => 'https://twitter.com/search?q=%23' . rawurlencode($hashtag->text),
                         ];
-                        $tweet->text = str_replace($hastagText, $this->contentObject->typolink($hastagText, $typolinkConfiguration), $tweet->text);
+                        $tweet->text = str_replace(
+                            $hastagText,
+                            $this->contentObject->typolink(
+                                $hastagText,
+                                $typolinkConfiguration
+                            ),
+                            $tweet->text
+                        );
                     }
                     unset($hashtag);
                 }
@@ -435,7 +457,14 @@ class TweetRepository
                         $typolinkConfiguration = [
                             'parameter' => 'https://twitter.com/' . rawurlencode($username->screen_name),
                         ];
-                        $tweet->text = str_replace($screenName, $this->contentObject->typolink($screenName, $typolinkConfiguration), $tweet->text);
+                        $tweet->text = str_replace(
+                            $screenName,
+                            $this->contentObject->typolink(
+                                $screenName,
+                                $typolinkConfiguration
+                            ),
+                            $tweet->text
+                        );
                     }
                     unset($username);
                 }
@@ -457,20 +486,20 @@ class TweetRepository
      *                          Default is \TYPO3\CMS\Core\Messaging\FlashMessage::OK.
      * @return void
      */
-    public function notify($message, $messageHeader, $severity = \TYPO3\CMS\Core\Messaging\FlashMessage::OK)
+    public function notify($message, $messageHeader, $severity = FlashMessage::OK)
     {
         if (TYPO3_MODE !== 'BE') {
             return;
         }
-        $flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+        $flashMessage = GeneralUtility::makeInstance(
+            FlashMessage::class,
             $message,
             $messageHeader,
             $severity,
             true
         );
-        /** @var $flashMessageService \TYPO3\CMS\Core\Messaging\FlashMessageService */
-        $flashMessageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
+        /** @var $flashMessageService FlashMessageService */
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         /** @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue */
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);

@@ -7,7 +7,7 @@ plugin.wttwitter {
 	# cat=plugin.wt_twitter//0020; type=options[showOwn,showHome,showFriends]; label= Mode: Show only own twitter feeds or show own and from friends or show only from friends
 	main.mode = showOwn
 
-	# cat=plugin.wt_twitter//0040; type=text; label= Twitter Account: Write your username (e.g. http://twitter.com/USERNAME)
+	# cat=plugin.wt_twitter//0040; type=text; label= Twitter Account: Write your username (e.g. https://twitter.com/USERNAME)
 	main.account = einpraegsam
 
 	# cat=plugin.wt_twitter//0060; type=text; label= Show feed from hashtag: Type a hashtag

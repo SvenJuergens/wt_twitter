@@ -34,7 +34,6 @@ use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use WtTwitterPackage\WtTwitter\Twitter\TwitterApi;
 
 class SignIn
 {

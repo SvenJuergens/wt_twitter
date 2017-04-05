@@ -85,7 +85,7 @@ plugin.tx_wttwitter {
 						imageLinkWrap.typolink.parameter.cObject = COA
 						imageLinkWrap.typolink.parameter.cObject {
 							10 = TEXT
-							10.value = http://maps.google.com/maps?z=16&q=
+							10.value = https://maps.google.com/maps?z=16&q=
 							20 = TEXT
 							20.field = geo_0
 							30 = TEXT
