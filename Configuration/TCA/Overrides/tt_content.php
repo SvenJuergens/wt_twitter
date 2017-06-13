@@ -12,12 +12,12 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['wttwitter_li
 );
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
-    'wttwitter_list',
+    'wt_twitter',
     'Configuration/TypoScript/Main/',
     'Main TypoScript'
 );
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
-    'wttwitter_list',
+    'wt_twitter',
     'Configuration/TypoScript/NewsTicker/',
     'Newsticker'
 );
