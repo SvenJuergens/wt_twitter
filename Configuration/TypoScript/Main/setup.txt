@@ -1,8 +1,19 @@
-# WT_TWITTER PLUGIN #
-includeLibs.user_wttwitter_userfuncs = EXT:wt_twitter/Classes/UserFunction/user_wttwitter_userfunction.php
-
 plugin.tx_wttwitter {
 
+	view {
+		templateRootPaths {
+			0 = EXT:wt_twitter/Resources/Private/Templates/
+			1 = {$plugin.wttwitter.view.templateRootPath}
+		}
+		partialRootPaths {
+			0 = EXT:wt_twitter/Resources/Private/Partials/
+			1 = {$plugin.wttwitter.view.partialRootPath}
+		}
+		layoutRootPaths {
+			0 = EXT:wt_twitter/Resources/Private/Layouts/
+			1 = {$plugin.wttwitter.view.layoutRootPath}
+		}
+	}
 	settings {
 		setup {
 			# Constants
@@ -28,13 +39,13 @@ plugin.tx_wttwitter {
 					# Userfunc to change RT to a retweet image
 					10 = USER
 					10 {
-						userFunc = user_wttwitteruserfunction->user_wttwitter_retweetIcon
+						userFunc = WtTwitterPackage\WtTwitter\UserFunction\WttwitterUserfunction->retweetIcon
 						userFunc {
 
 							# Userfunc to change links, hashtags and accounts to its links
 							string = USER
 							string {
-								userFunc = user_wttwitteruserfunction->user_wttwitter_link
+								userFunc = WtTwitterPackage\WtTwitter\UserFunction\WttwitterUserfunction->link
 								userFunc {
 									field = text
 									typolink.extTarget = _blank
@@ -57,7 +68,7 @@ plugin.tx_wttwitter {
 				created_at = COA
 				created_at {
 					10 = USER
-					10.userFunc = user_wttwitteruserfunction->user_wttwitter_date
+					10.userFunc = WtTwitterPackage\WtTwitter\UserFunction\WttwitterUserfunction->date
 					10.userFunc {
 						field = created_at
 						strftime = %d.%m.%Y, %H:%M

@@ -4,6 +4,14 @@
 
 plugin.wttwitter {
 
+	view {
+		# cat=plugin.wt_twitter/file; type=string; label=Path to template root (FE)
+		templateRootPath = EXT:wt_twitter/Resources/Private/Templates/
+		# cat=plugin.wt_twitter/file; type=string; label=Path to template partials (FE)
+		partialRootPath = EXT:wt_twitter/Resources/Private/Partials/
+		# cat=plugin.wt_twitter/file; type=string; label=Path to template layouts (FE)
+		layoutRootPath = EXT:wt_twitter/Resources/Private/Layouts/
+	}
 	# cat=plugin.wt_twitter//0020; type=options[showOwn,showHome,showFriends]; label= Mode: Show only own twitter feeds or show own and from friends or show only from friends
 	main.mode = showOwn
 

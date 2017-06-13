@@ -1,8 +1,16 @@
-<div id="wt_twitter_newsticker">
-	<f:flashMessages class="wt_twitter_errors" style="background-color: #FBB19B; padding: 5px 30px; font-weight: bold; border: 1px solid #DC4C42; margin-bottom: 20px; font-family: arial, verdana; color: #444; font-size: 12px;" />
-	<ul class="wttwitter_feed">
-		<f:for each="{tweets}" as="tweet">
-			<li>{tweet -> f:cObject(typoscriptObjectPath: 'plugin.tx_wttwitter.settings.setup.tweets.text', currentValueKey: 'text')}</li>
-		</f:for>
-	</ul>
-</div>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  data-namespace-typo3-fluid="true">
+
+<f:layout name="Default" />
+<f:section name="content">
+	<div id="wt_twitter_newsticker">
+		<f:flashMessages class="wt_twitter_errors" style="background-color: #FBB19B; padding: 5px 30px; font-weight: bold; border: 1px solid #DC4C42; margin-bottom: 20px; font-family: arial, verdana; color: #444; font-size: 12px;" />
+		<ul class="wttwitter_feed">
+			<f:for each="{tweets}" as="tweet">
+				<li>{tweet -> f:cObject(typoscriptObjectPath: 'plugin.tx_wttwitter.settings.setup.tweets.text', currentValueKey: 'text')}</li>
+			</f:for>
+		</ul>
+	</div>
+</f:section>
+
+</html>

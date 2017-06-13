@@ -1,4 +1,6 @@
 <?php
+namespace WtTwitterPackage\WtTwitter\UserFunction;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -25,7 +27,7 @@
 /**
  * @author Nicole Cordes <cordes@cps-it.de>
  */
-class user_wttwitteruserfunction
+class WttwitterUserfunction
 {
 
     /**
@@ -46,7 +48,7 @@ class user_wttwitteruserfunction
      *
      * @return string
      */
-    public function user_wttwitter_remove($content = '', $conf = [])
+    public function remove($content = '', $conf = [])
     {
         // config
         $this->conf = $conf['userFunc.']; // ts config
@@ -66,7 +68,7 @@ class user_wttwitteruserfunction
      *
      * @return string
      */
-    public function user_wttwitter_link($content = '', $conf = [])
+    public function link($content = '', $conf = [])
     {
         // config
         $conf = $conf['userFunc.']; // ts config
@@ -116,7 +118,6 @@ class user_wttwitteruserfunction
                 ); // replace each url with typolink
             }
         }
-
         return $string; // return string without another string
     }
 
@@ -127,7 +128,7 @@ class user_wttwitteruserfunction
      * @var        array $conr: TypoScript configuration for this userFunc
      * @return    string        $content: new content
      */
-    public function user_wttwitter_retweetIcon($content = '', $conf = [])
+    public function retweetIcon($content = '', $conf = [])
     {
         // config
         $conf = $conf['userFunc.']; // ts config
@@ -146,7 +147,7 @@ class user_wttwitteruserfunction
      * @var        array $conr: TypoScript configuration for this userFunc
      * @return    string        $date: timestamp from pubDate
      */
-    public function user_wttwitter_date($content = '', $conf = [])
+    public function date($content = '', $conf = [])
     {
         $conf = $conf['userFunc.']; // ts config
 
