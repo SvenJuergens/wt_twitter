@@ -271,7 +271,7 @@ class TweetRepository
      */
     protected function isCurlActivated()
     {
-        if (!$GLOBALS['TYPO3_CONF_VARS']['SYS']['curlUse'] || !function_exists('curl_init')) {
+        if (!function_exists('curl_init')) {
             $this->notify(
                 'Please enable the use of curl in TYPO3 Install Tool by activation of 
                  TYPO3_CONF_VARS[SYS][curlUse] and check PHP integration.',
