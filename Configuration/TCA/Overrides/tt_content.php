@@ -11,13 +11,9 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['wttwitter_li
     'FILE:EXT:wt_twitter/Configuration/Flexforms/flexform.xml'
 );
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'wt_twitter',
-    'Configuration/TypoScript/Main/',
-    'Main TypoScript'
-);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
-    'wt_twitter',
-    'Configuration/TypoScript/NewsTicker/',
-    'Newsticker'
+    'List',
+    'wt_twitter - Frontend Tweets'
 );
