@@ -42,6 +42,7 @@ class SignIn
      * Shows the "Sign in with Twitter" button in the extension configuration
      *
      * @return string The rendered view
+     * @throws \TYPO3\CMS\Core\Exception
      */
     public function showButton()
     {
@@ -49,12 +50,12 @@ class SignIn
 
         $extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['wt_twitter']);
         if (empty($extensionConfiguration['oauth_token']) || empty($extensionConfiguration['oauth_token_secret'])) {
-            if ($GLOBALS['TYPO3_CONF_VARS']['SYS']['curlUse'] && function_exists('curl_init')) {
+            if (function_exists('curl_init')) {
                 $url = TwitterApi::getOAuthRequestTokenUrl();
 
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
                 curl_setopt($ch, CURLINFO_HEADER_OUT, 1);
                 curl_setopt($ch, CURLOPT_HEADER, 0);
                 curl_setopt($ch, CURLOPT_URL, $url);
@@ -82,7 +83,7 @@ class SignIn
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 
                 $response = curl_exec($ch);
-                if (curl_getinfo($ch, CURLINFO_HTTP_CODE) == 200) {
+                if (curl_getinfo($ch, CURLINFO_HTTP_CODE) === 200) {
                     $responseArray = GeneralUtility::explodeUrl2Array($response);
 
                     $content .= '<a href="#" onclick="twitterWindow = window.open(\'' .
@@ -101,7 +102,7 @@ class SignIn
                 curl_close($ch);
             } else {
                 $this->notify(
-                    'Please enable the use of curl in TYPO3 Install Tool by activation of TYPO3_CONF_VARS[SYS][curlUse] and check PHP integration.',
+                    'Please enable the use of curl and check PHP integration.',
                     'No curl available',
                     FlashMessage::ERROR
                 );
@@ -129,8 +130,9 @@ class SignIn
      *                          or \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR.
      *                          Default is \TYPO3\CMS\Core\Messaging\FlashMessage::OK.
      * @return void
+     * @throws \TYPO3\CMS\Core\Exception
      */
-    public function notify($message, $messageHeader, $severity = FlashMessage::OK)
+    public function notify($message, $messageHeader, $severity = FlashMessage::OK): void
     {
         if (TYPO3_MODE !== 'BE') {
             return;

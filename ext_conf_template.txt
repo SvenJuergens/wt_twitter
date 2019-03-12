@@ -4,5 +4,5 @@ oauth_token =
 # cat=basic/enable/020; type=string; label=Access token secret: Secret to sign the requests to Twitter's APIs.
 oauth_token_secret =
 
-# cat=basic/enable/030; type=user[EXT:wt_twitter/Classes/Twitter/SignIn.php:Tx_WtTwitter_Twitter_SignIn->showButton]; label=Sign in with Twitter
+# cat=basic/enable/030; type=user[WtTwitterPackage\WtTwitter\Twitter\SignIn->showButton]; label=Sign in with Twitter
 signed=0
