@@ -24,6 +24,7 @@ namespace WtTwitterPackage\WtTwitter\Domain\Repository;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -65,7 +66,7 @@ class TweetRepository
      */
     public function __construct()
     {
-        $this->extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['wt_twitter']);
+        $this->extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('wt_twitter');
         $this->contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
     }
 
